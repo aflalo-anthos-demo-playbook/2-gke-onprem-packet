@@ -626,15 +626,15 @@ Congrats 🎉  ! You're admin cluster is up and running !
 
 ## 4. Create a User Cluster
 
-- Update the file with your SA names using sed 
+- Update the file with your SA names using sed
 
-Experimental : 
+If all your SA are named by default and have the same id use:
 
 ```sh
-sed -i 's/2009181532/YOUR_SA_NUMBER/g' user-cluster/user-cluster.yaml
+sed -i 's/2009181532/YOUR_SA_ID/g' user-cluster/user-cluster.yaml
 ```
 
-Tested version
+Else:
 
 ```sh
 sed -i 's/log-mon-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
@@ -648,7 +648,7 @@ sed -i 's/connect-register-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-clust
 sed -i 's/connect-agent-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
 ```
 
-- Update `projectID` value
+- Update `projectID` value to your GCP Project value
 
 - After you've modified the configuration file, run gkectl check-config to verify that the file is valid and can be used for installation:
 
@@ -780,3 +780,5 @@ echo `kubectl get secret $TOKEN_SECRET -o yaml | grep "token:" | awk -F": " '{pr
 ```
 
 - Go to GCP console, Kubernetes Engine, Clusters, Login, Choose Token and paste ksa-token.txt content
+
+### Relax and enjoy your cluster 🥂
