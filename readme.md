@@ -351,11 +351,11 @@ cp *.json 2-gke-onprem-packet/gcp_keys/
 - Copy the vspherecert.pem :
 
 ```sh
-cp vspherecert.pem 2-gke-onprem-packet/admin-workstation/
+cp vspherecert.pem 2-gke-onprem-packet/
 ```
 
-- Update credentials for `admin-cluster/admin-cluster.yaml`
-- Update `admin-cluster.yaml` with your the SA's name used for logs :
+- Update vCenter credentials for `admin-cluster/admin-cluster.yaml`
+- Update `admin-cluster/admin-cluster.yaml` with your the service account's name used for logs :
 
 ```sh
 sed -i 's/log-mon-sa-2009181532/YOUR_SA_NAME/g' admin-cluster/admin-cluster.yaml
