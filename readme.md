@@ -626,7 +626,19 @@ Congrats 🎉  ! You're admin cluster is up and running !
 
 ## 4. Create a User Cluster
 
+- Update the file with your SA names
 
+```sh
+sed -i 's/log-mon-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
+```
+
+```sh
+sed -i 's/connect-register-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
+```
+
+```sh
+sed -i 's/connect-agent-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
+```
 
 ---
 
