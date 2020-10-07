@@ -640,31 +640,133 @@ sed -i 's/connect-register-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-clust
 sed -i 's/connect-agent-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
 ```
 
----
+- After you've modified the configuration file, run gkectl check-config to verify that the file is valid and can be used for installation:
 
-Step 1 : create the admin workstation with gkeadm tool
-
-Step2 : gkectl check config
-
-Step2 : Run gkectl preapre
-
-Step 2 : create the lb with gkectl but run before a prepare gkectl prepare --config
-
-Step 3 gkectl create admin
-
-Lance un kube en local sur la workstation qui va lui même deployer le kube admin
-
-Fichier seesaw-for-gke-admin qui sert à
-
-Login to user cluster
 ```sh
-export KUBECONFIG=/home/ubuntu/anthos-ovh/ovh-cluster-1-kubeconfig
-alias k=kubectl
+gkectl check-config --kubeconfig kubeconfig --config user-cluster/user-cluster.yaml
+```
 
+The output should look similar to this :
 
+```none
+ubuntu@gke-admin-ws-200918-145413:~/2-gke-onprem-packet$ gkectl check-config --kubeconfig kubeconfig --config user-cluster/user-cluster.yaml
+- Validation Category: Config Check
+    - [SUCCESS] Config
+
+- Validation Category: Internet Access
+    - [SUCCESS] Internet access to required domains
+
+- Validation Category: GCP
+    - [SUCCESS] GCP service
+    - [SUCCESS] GCP service account
+
+- Validation Category: GKEHub
+    - [SUCCESS] GKEHub new membership
+
+- Validation Category: Docker Registry Credential
+    - [SUCCESS] Docker registry access
+
+- Validation Category: User Cluster VCenter
+    - [SUCCESS] Credentials
+    - [SUCCESS] Version
+    - [SUCCESS] Datacenter
+    - [SUCCESS] Datastore
+    - [SUCCESS] Resource pool
+    - [SUCCESS] Folder
+    - [SUCCESS] Network
+    - [SUCCESS] Datastore
+
+- Validation Category: Bundled LB
+    - [SUCCESS] Seesaw validation
+
+- Validation Category: Network Configuration
+    - [SUCCESS] CIDR, VIP and static IP (availability and overlapping)
+
+- Validation Category: DNS
+    - [SUCCESS] DNS (availability)
+
+- Validation Category: TOD
+    - [SUCCESS] TOD (availability)
+
+- Validation Category: VIPs
+    - [SUCCESS] Ping (availability)
+
+- Validation Category: Node IPs
+    - [SUCCESS] Ping (availability)
+
+Now running slow validation checks. Press ctrl-c twice to cancel. Use flag --fast to disable. Use flag --cleanup=false to keep the test VMs for debugging afterwards.
+
+Creating test VMs with user cluster configuration...  DONE
+Waiting to get IP addresses from test VMs...  DONE
+Waiting for test VMs to become ready...  DONE
+
+- Validation Category: Internet Access
+    - [SUCCESS] Internet access to required domains
+
+- Validation Category: VCenter on Test VMs
+    - [SUCCESS] Test VM: VCenter access and permission
+
+- Validation Category: DNS on Test VMs
+    - [SUCCESS] Test VM: DNS availability
+
+- Validation Category: TOD on Test VMs
+    - [SUCCESS] Test VM: TOD availability
+
+- Validation Category: Docker Registry
+    - [SUCCESS] Docker registry access
+
+Deleting test VMs with user cluster configuration...  DONE
+All validation results were SUCCESS.
+```
+
+- Create and configure the VM for your Seesaw load balancer:
+
+```sh
+gkectl create loadbalancer --kubeconfig kubeconfig --config user-cluster/user-cluster.yaml
+```
+
+The output should look similar to this :
+
+```none
+Creating 1 LB VMs in group "seesaw-for-user-cluster"...  DONE
+Saved Seesaw group information of "seesaw-for-user-cluster" to file: user-cluster/seesaw-for-user-cluster.yaml
+Waiting LBs in group "seesaw-for-user-cluster" to become healthy...  DONE
+```
+
+- Create your user cluster:
+
+```sh
+gkectl create cluster --kubeconfig kubeconfig --config user-cluster/user-cluster.yaml
+```
+
+The output should look similar to this :
+
+```none
+All validation results were SUCCESS.
+Waiting for user cluster "user-cluster" to be ready...  DONE
+    Creating or updating master node...
+    Creating or updating user cluster control plane workloads: 10/11 pods are ready...
+    Creating or updating node pools: "pool-1": 0/3 replicas are ready...
+    Creating or updating addon workloads: 10/31 pods are ready...
+    Creating or updating addon workloads: 16/31 pods are ready...
+    Creating or updating addon workloads: 22/37 pods are ready...
+    Creating or updating addon workloads: 31/38 pods are ready...
+    Creating or updating addon workloads: 35/39 pods are ready...
+    Cluster is running...
+Done provisioning user cluster user-cluster. You can access it with `kubectl --kubeconfig user-cluster-kubeconfig`
+```
+
+- The last step is login to your newly created user cluster. We will use a Token Authentication.
+
+Run :
+
+```sh
+export KUBECONFIG=/home/ubuntu/2-gke-onprem-packet/user-cluster-kubeconfig
 export KSA_NAME=gke-connect-admin
 kubectl create serviceaccount $KSA_NAME
 kubectl create clusterrolebinding $KSA_NAME --clusterrole cluster-admin --serviceaccount=default:$KSA_NAME
 TOKEN_SECRET=`kubectl get serviceaccounts $KSA_NAME -o yaml | grep $KSA_NAME-token | awk -F": " '{print $2}'`
 echo `kubectl get secret $TOKEN_SECRET -o yaml | grep "token:" | awk -F": " '{print $2}' | base64 -d` > ksa-token.txt
 ```
+
+- Go to GCP console, Kubernetes Engine, Clusters, Login, Choose Token and paste ksa-token.txt content
