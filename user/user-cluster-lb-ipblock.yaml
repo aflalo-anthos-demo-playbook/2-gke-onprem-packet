@@ -1,0 +1,8 @@
+blocks:
+- netmask: 255.255.255.0
+  gateway: 172.16.3.1
+  ips:
+  - ip: 172.16.3.19
+    hostname: user-cluster-lb-1
+  - ip: 172.16.3.20
+    hostname: user-cluster-lb-2

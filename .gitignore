@@ -1,0 +1,6 @@
+logs/*
+admin-cluster/logs/*
+user/logs/*
+vspherecert.pem
+gke-admin-ws-*
+.DS_Store

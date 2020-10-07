@@ -1,0 +1,18 @@
+blocks:
+  - netmask: 255.255.255.0
+    gateway: 172.16.3.1
+    ips:
+    - ip: 172.16.3.41
+      hostname: admin-host1
+    - ip: 172.16.3.42
+      hostname: admin-host2
+    - ip: 172.16.3.43
+      hostname: admin-host3
+    - ip: 172.16.3.44
+      hostname: admin-host4
+    - ip: 172.16.3.45
+      hostname: admin-host5
+    - ip: 172.16.3.46
+      hostname: admin-host6
+    - ip: 172.16.3.47
+      hostname: admin-host7
