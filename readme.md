@@ -626,7 +626,15 @@ Congrats 🎉  ! You're admin cluster is up and running !
 
 ## 4. Create a User Cluster
 
-- Update the file with your SA names
+- Update the file with your SA names using sed 
+
+Experimental : 
+
+```sh
+sed -i 's/2009181532/YOUR_SA_NUMBER/g' user-cluster/user-cluster.yaml
+```
+
+Tested version
 
 ```sh
 sed -i 's/log-mon-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
@@ -639,6 +647,8 @@ sed -i 's/connect-register-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-clust
 ```sh
 sed -i 's/connect-agent-sa-2009181532/YOUR_SA_NAME/g' user-cluster/user-cluster.yaml
 ```
+
+- Update `projectID` value
 
 - After you've modified the configuration file, run gkectl check-config to verify that the file is valid and can be used for installation:
 

@@ -141,16 +141,16 @@ stackdriver:
   enableVPC: false
   # The absolute or relative path to the key file for a GCP service account used to
   # send logs and metrics from the cluster
-  serviceAccountKeyPath: /home/ubuntu/2-gke-onprem-packet/sa/log-mon-sa-2009181532.json
+  serviceAccountKeyPath: /home/ubuntu/2-gke-onprem-packet/gcp_keys/log-mon-sa-2009181532.json
 # (Optional) Specify which GCP project to connect your GKE clusters to
 gkeConnect:
   projectID: aflalo-anthos
   # The absolute or relative path to the key file for a GCP service account used to
   # register the cluster
-  registerServiceAccountKeyPath: /home/ubuntu/2-gke-onprem-packet/sa/connect-register-sa-2009181532.json
+  registerServiceAccountKeyPath: /home/ubuntu/2-gke-onprem-packet/gcp_keys/connect-register-sa-2009181532.json
   # The absolute or relative path to the key file for a GCP service account used by
   # the GKE connect agent
-  agentServiceAccountKeyPath: /home/ubuntu/2-gke-onprem-packet/sa/connect-agent-sa-2009181532.json
+  agentServiceAccountKeyPath: /home/ubuntu/2-gke-onprem-packet/gcp_keys/connect-agent-sa-2009181532.json
 # (Optional) Specify Cloud Run configuration
 cloudRun:
   enabled: false
