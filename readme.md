@@ -370,32 +370,263 @@ gkectl check-config --config admin-cluster/admin-cluster.yaml
 The output should look similar to this :
 
 ```none
-Fast check pass but slow checks fail... Admin cluster deployed successfully though
+ubuntu@gke-admin-ws-200918-145413:~/2-gke-onprem-packet$ gkectl check-config --config admin-cluster/admin-cluster.yaml
+- Validation Category: Config Check
+    - [SUCCESS] Config
+
+- Validation Category: Internet Access
+    - [SUCCESS] Internet access to required domains
+
+- Validation Category: GCP
+    - [SUCCESS] GCP service
+    - [SUCCESS] GCP service account
+
+- Validation Category: Docker Registry Credential
+    - [SUCCESS] Docker registry access
+
+- Validation Category: Admin Cluster VCenter
+    - [SUCCESS] Credentials
+    - [SUCCESS] Version
+    - [SUCCESS] Datacenter
+    - [SUCCESS] Datastore
+    - [SUCCESS] Resource pool
+    - [SUCCESS] Folder
+    - [SUCCESS] Network
+    - [SUCCESS] Data disk
+
+- Validation Category: Bundled LB
+    - [SUCCESS] Seesaw validation
+
+- Validation Category: Network Configuration
+    - [SUCCESS] CIDR, VIP and static IP (availability and overlapping)
+
+- Validation Category: DNS
+    - [SUCCESS] DNS (availability)
+
+- Validation Category: TOD
+    - [SUCCESS] TOD (availability)
+
+- Validation Category: VIPs
+    - [SUCCESS] Ping (availability)
+
+- Validation Category: Node IPs
+    - [SUCCESS] Ping (availability)
+
+Now running slow validation checks. Press ctrl-c twice to cancel. Use flag --fast to disable. Use flag --cleanup=false to keep the test VMs for debugging afterwards.
+
+Using OS image OVA file: "/tmp/gke-on-prem-bundle-cache/770007/gke-on-prem-ubuntu-1.5.0-gke.27.ova"
+Setting up OS image as a VM template in vSphere...
+[07-10-20 17:08:40] Uploading OS image "gke-on-prem-ubuntu-1.5.0-gke.27" to vSphere...OK
+Creating test VMs with admin cluster configuration...  DONE
+Waiting to get IP addresses from test VMs...  DONE
+Waiting for test VMs to become ready...  DONE
+
+- Validation Category: Internet Access
+    - [SUCCESS] Internet access to required domains
+
+- Validation Category: VCenter on Test VMs
+    - [SUCCESS] Test VM: VCenter access and permission
+
+- Validation Category: DNS on Test VMs
+    - [SUCCESS] Test VM: DNS availability
+
+- Validation Category: TOD on Test VMs
+    - [SUCCESS] Test VM: TOD availability
+
+- Validation Category: Docker Registry
+    - [SUCCESS] Docker registry access
+    - [SUCCESS] gcr.io/gke-on-prem-release access
+
+Deleting test VMs with admin cluster configuration...  DONE
+All validation results were SUCCESS.
 ```
 
 - Run gkectl prepare to initialize your vSphere environment:
 
 ```sh
-gkectl prepare --config=admin-cluster.yaml
-```
-
-- Create Seesaw loadbalancer:
-
-```sh
-gkectl create loadbalancer --config admin-cluster.yaml
-```
-
-- Finally create the admin cluster:
-
-```sh
-gkectl create admin --config admin-cluster.yaml
+gkectl prepare --config=admin-cluster/admin-cluster.yaml
 ```
 
 The output should look similar to this :
 
 ```none
+ubuntu@gke-admin-ws-200918-145413:~/2-gke-onprem-packet$ gkectl prepare --config=admin-cluster/admin-cluster.yaml
+Reading config with version "v1"
+- Validation Category: Config Check
+    - [SUCCESS] Config
 
+- Validation Category: Internet Access
+    - [SUCCESS] Internet access to required domains
+
+- Validation Category: GCP
+    - [SUCCESS] GCP service
+    - [SUCCESS] GCP service account
+
+- Validation Category: GCR Credential
+    - [SUCCESS] gcr.io/gke-on-prem-release access
+
+- Validation Category: Docker Registry Credential
+    - [SKIPPED] Docker registry access: No registry config specified
+
+- Validation Category: Admin Cluster VCenter
+    - [SUCCESS] Credentials
+    - [SUCCESS] Version
+    - [SUCCESS] Datacenter
+    - [SUCCESS] Datastore
+    - [SUCCESS] Resource pool
+    - [SUCCESS] Folder
+    - [SUCCESS] Network
+
+Some validations were SKIPPED. Check the report above.
+Logging in to gcr.io/gke-on-prem-release
+Reusing VM template "gke-on-prem-ubuntu-1.5.0-gke.27" that already exists in vSphere.
+Using OS image OVA file: "/tmp/gke-on-prem-bundle-cache/770007/seesaw-os-image-v1.5-20200911-1fd66a0184.ova"
+Setting up OS image as a VM template in vSphere...
+[07-10-20 17:12:48] Uploading OS image "seesaw-os-image-v1.5-20200911-1fd66a0184" to vSphere...OK
 ```
+
+- Create Seesaw loadbalancer:
+
+```sh
+gkectl create loadbalancer --config admin-cluster/admin-cluster.yaml
+```
+
+The output should look similar to this :
+
+```none
+ubuntu@gke-admin-ws-200918-145413:~/2-gke-onprem-packet$ gkectl create loadbalancer --config admin-cluster/admin-cluster.yaml
+Reading config with version "v1"
+- Validation Category: Admin Cluster VCenter
+    - [SUCCESS] Credentials
+    - [SUCCESS] Version
+    - [SUCCESS] Datacenter
+    - [SUCCESS] Datastore
+    - [SUCCESS] Resource pool
+    - [SUCCESS] Folder
+    - [SUCCESS] Network
+
+- Validation Category: Bundled LB
+    - [SUCCESS] Seesaw validation
+
+- Validation Category: Network Configuration
+    - [SUCCESS] CIDR, VIP and static IP (availability and overlapping)
+
+All validation results were SUCCESS.
+
+Creating 1 LB VMs in group "seesaw-for-gke-admin"...  DONE
+Saved Seesaw group information of "seesaw-for-gke-admin" to file: admin-cluster/seesaw-for-gke-admin.yaml
+Waiting LBs in group "seesaw-for-gke-admin" to become healthy...  DONE
+```
+
+- Finally create the admin cluster:
+
+```sh
+gkectl create admin --config admin-cluster/admin-cluster.yaml
+```
+
+The output should look similar to this :
+
+```none
+ubuntu@gke-admin-ws-200918-145413:~/2-gke-onprem-packet$ gkectl create admin --config admin-cluster/admin-cluster.yaml
+Reading config with version "v1"
+- Validation Category: Config Check
+    - [SUCCESS] Config
+
+- Validation Category: OS Images
+    - [SUCCESS] Admin cluster OS images exist
+
+- Validation Category: Cluster Version
+    - [SUCCESS] Cluster versions for creating admin cluster
+
+- Validation Category: Reserved IPs
+    - [SKIPPED] Admin cluster reserved IP for new user master: No AdminClusterClient
+
+- Validation Category: Internet Access
+    - [SUCCESS] Internet access to required domains
+
+- Validation Category: GCP
+    - [SUCCESS] GCP service
+    - [SUCCESS] GCP service account
+
+- Validation Category: Docker Registry Credential
+    - [SUCCESS] Docker registry access
+
+- Validation Category: Admin Cluster VCenter
+    - [SUCCESS] Credentials
+    - [SUCCESS] Version
+    - [SUCCESS] Datacenter
+    - [SUCCESS] Datastore
+    - [SUCCESS] Resource pool
+    - [SUCCESS] Folder
+    - [SUCCESS] Network
+    - [SUCCESS] Data disk
+
+- Validation Category: Bundled LB
+    - [SUCCESS] Seesaw validation
+
+- Validation Category: Network Configuration
+    - [SUCCESS] CIDR, VIP and static IP (availability and overlapping)
+
+- Validation Category: DNS
+    - [SUCCESS] DNS (availability)
+
+- Validation Category: TOD
+    - [SUCCESS] TOD (availability)
+
+- Validation Category: VIPs
+    - [SUCCESS] Ping (availability)
+
+- Validation Category: Node IPs
+    - [SUCCESS] Ping (availability)
+
+Some validations were SKIPPED. Check the report above.
+DEBUG: docker/images.go:70] Pulling image: gcr.io/gke-on-prem-release/kindest/node:v0.6.1-gke.8-v1.17.7-gke.0 ...
+ ✓ Ensuring node image (gcr.io/gke-on-prem-release/kindest/node:v0.6.1-gke.8-v1.17.7-gke.0) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+Could not read storage manifest, falling back on old k8s.io/host-path default ...
+ ✓ Installing StorageClass 💾
+ ✓ Waiting ≤ 5m0s for control-plane = Ready ⏳
+ • Ready after 59s 💚
+    Waiting for external cluster control plane to be healthy...  DONE
+    Applying vSphere certificate configmap to external cluster...  DONE
+    Applying vSphere credentials secret to external cluster...  DONE
+    Creating data disk for internal cluster....  DONE
+Applying admin bundle to external cluster...  DONE
+    Waiting for cluster to be ready for external cluster...  DONE
+Provisioning master vm for internal cluster via external cluster
+    Creating cluster object  on external cluster...  DONE
+    Creating master...  DONE
+    Updating external cluster object with master endpoint...  DONE
+Creating internal cluster
+    Getting internal cluster kubeconfig...  DONE
+    Waiting for internal cluster control plane to be healthy...  DONE
+    Applying docker registry [gcr.io/gke-on-prem-release] credentials secret to internal
+cluster...  DONE
+    Applying vSphere certificate configmap to internal cluster...  DONE
+    Applying vSphere credentials secret to internal cluster...  DONE
+    Applying Seesaw credentials secret to internal cluster...  DONE
+    Checking Bundle requirements...  DONE
+    Applying Bundle CRDs...  DONE
+    Applying Bundle YAML...  DONE
+    Applying admin base bundle to internal cluster...  DONE
+    Pivoting Cluster API objects from external to internal cluster...  DONE
+    Waiting for kube-apiserver VIP to be configured on the internal cluster...  DONE
+Creating node Machines in internal cluster...  DONE
+Applying admin addon bundle to internal cluster...  DONE
+Waiting for admin cluster machines and pods to be ready...  DONE
+Cleaning up external cluster...  DONE
+Creating dashboards in Cloud Monitoring
+Done provisioning Admin Control Plane cluster. You can access it with `kubectl --kubeconfig kubeconfig`
+```
+
+Congrats 🎉  ! You're admin cluster is up and running !
+
+## 4. Create a User Cluster
+
+
 
 ---
 
