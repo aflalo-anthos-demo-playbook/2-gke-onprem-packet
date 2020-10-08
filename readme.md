@@ -1,7 +1,9 @@
 
 # GKE on prem : Installation guide for Packet
 
-**_Disclaimer : This installation guide isn't an official Google guide. The goal here is only to describe how to go through a full installation of GKE On Prem_**
+## 0. Target architecture :
+
+![Target Architecture](gke_architecture.png)
 
 ## 1. Provision a packet environment
 
