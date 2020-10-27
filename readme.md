@@ -356,6 +356,7 @@ cp *.json 2-gke-onprem-packet/gcp_keys/
 cp vspherecert.pem 2-gke-onprem-packet/
 ```
 
+- Enter repo folder : `cd 2-gke-onprem-packet/`
 - Update vCenter credentials for `admin-cluster/admin-cluster.yaml`
 - Update `admin-cluster/admin-cluster.yaml` with your the service account's name used for logs :
 
