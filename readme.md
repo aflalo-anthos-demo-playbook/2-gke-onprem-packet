@@ -130,7 +130,7 @@ apt install git
 - Clone the repository to the gateway:
 
  ```sh
- git clone git@github.com:aflalo-anthos-demo-playbook/2-gke-onprem-packet.git
+ git clone https://github.com/aflalo-anthos-demo-playbook/2-gke-onprem-packet.git
  ```
 
 - Copy the vspherecert.pem :
@@ -332,10 +332,10 @@ drwxrwxr-x 2 ubuntu ubuntu 1024 Oct  5 17:59 logs
 -rw-r--r-- 1 ubuntu ubuntu 2314 Oct  5 18:00 whitelisted-key.json
 ```
 
-- For the ease of use, we will clone this repo again :
+- Let's clone this repo again :
 
 ```sh
-git clone git@github.com:aflalo-anthos-demo-playbook/2-gke-onprem-packet.git
+git clone https://github.com/aflalo-anthos-demo-playbook/2-gke-onprem-packet.git
 ```
 
 - Create a gcp_keys folder :
