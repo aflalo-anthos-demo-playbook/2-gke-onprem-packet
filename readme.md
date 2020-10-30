@@ -20,19 +20,20 @@ Prompts will guide you through the setup.
 Setup your terraform variables in a file named `terraform.tfvars`. Content should be similar to:
 
 ```sh
-auth_token = "API_TOKEN" #Update this line
-organization_id = "YOUR_ORG_ID" #Update this line
+auth_token = "PACKET_PERSONAL_API_TOKEN" #Update this line
+organization_id = "PACKET_ORG_ID" #Update this line
 project_name = "PACKET_PROJECT_NAME" #Update this line
 create_project = false
 project_id = "PACKET_PROJECT_ID" #Update this line
 anthos_gcp_project_id = "GCP_PROJECT_NAME" #Update this line
 gcs_bucket_name = "aflalo-bucket-anthos/packet" #Update this line
 vcenter_iso_name = "VMware-VCSA-all-6.7.0-15132721.iso" #Update this line
-anthos_version = "1.4.0-gke.13"
+#anthos_version = "1.4.0-gke.13"
 anthos_user_cluster_name = "vmware-cluster-1"
 esxi_host_count = 1
 anthos_datastore = "datastore1"
 anthos_deploy_clusters = "False"
+anthos_deploy_workstation_prereqs = false
 facility = "dfw2"
 anthos_user_master_replicas = 1
 ```
@@ -138,6 +139,12 @@ apt install git
  ```sh
  cp anthos/vspherecert.pem 2-gke-onprem-packet/admin-workstation/
  ```
+
+ If the file is missing, you can generate it by running : 
+
+```sh
+openssl s_client -showcerts -verify 5 -connect vcva.packet.local:443 < /dev/null | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="/root/anthos/vspherecert.pem"; print >out}'
+```
 
 - Copy gcp_keys folder :
 
@@ -358,6 +365,13 @@ cp vspherecert.pem 2-gke-onprem-packet/
 
 - Enter repo folder : `cd 2-gke-onprem-packet/`
 - Update vCenter credentials for `admin-cluster/admin-cluster.yaml`
+- Update the GCP project id for `admin-cluster/admin-cluster.yaml` in :
+
+```yaml
+stackdriver:
+  projectID:
+```
+
 - Update `admin-cluster/admin-cluster.yaml` with your the service account's name used for logs :
 
 ```sh
@@ -520,6 +534,8 @@ Creating 1 LB VMs in group "seesaw-for-gke-admin"...  DONE
 Saved Seesaw group information of "seesaw-for-gke-admin" to file: admin-cluster/seesaw-for-gke-admin.yaml
 Waiting LBs in group "seesaw-for-gke-admin" to become healthy...  DONE
 ```
+
+- Before creating the admin cluster, we need to create a Monitoring workspace inside GCP console. All you need to do is open `Monitoring`from the menu on the console and wait for your workspace to be created
 
 - Finally create the admin cluster:
 
