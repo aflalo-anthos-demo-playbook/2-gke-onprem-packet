@@ -795,7 +795,7 @@ export KSA_NAME=gke-connect-admin
 kubectl create serviceaccount $KSA_NAME
 kubectl create clusterrolebinding $KSA_NAME --clusterrole cluster-admin --serviceaccount=default:$KSA_NAME
 TOKEN_SECRET=`kubectl get serviceaccounts $KSA_NAME -o yaml | grep $KSA_NAME-token | awk -F": " '{print $2}'`
-kubectl get secret $TOKEN_SECRET -o jsonpath='{.data.token}' > ksa-token.txt
+kubectl get secret $TOKEN_SECRET -o jsonpath='{.data.token}' | base64 -d > ksa-token.txt
 ```
 
 - Go to GCP console, Kubernetes Engine, Clusters, Login, Choose Token and paste ksa-token.txt content
